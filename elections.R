@@ -14,78 +14,69 @@ calc_gender_ratio_per_year <- function(year) {
     sum(elections$year == year  & elections$cand_sex == 'M')
 }
  
+#function to calculate number of years 
+
+number_of_years <- function(st_name){
+  years <- (sum(table(unique(st_name))))
+  return(years)
+}
+
 
 #calculating gender ratios over the years
+
 gender_ratio <- numeric()
-year <- unique(testing$year)
+year <- unique(elections$year)
 
 for (i in 1:number_of_years(elections$year)) {
   gender_ratio[i] <- calc_gender_ratio_per_year(year[i])
   
   }
 
+#storing gender ratio values in a new dataset, gender_ratios_by_year and arranging them in chronological order.
 gender_ratios_by_year <- data.frame("year" <- year, "ratios" = gender_ratio, 
                                     stringsAsFactors = FALSE )
 
+gender_ratios_by_year%>% arrange(year)
 
+#Plotting the gender ratios vs year using ggplot2, adding a red line to visualize a g perfect gender ratio of 1 and
+#a green line to visualize India's gender ratio in 2015.
 
-
-#creating new data frame
-
-ratio_plot_data <- data.frame("gen_ratios" = gen_ratios, "year_ratio" = year_ratio)
-
-
-
-plot(ratio_plot_data$gen_ratios~ratio_plot_data$year_ratio, ylim = c(0,1), xlab = " Election Year", ylab = "Gender Ratio (Females per Males" )
-reg <- lm(ratio_plot_data$gen_ratios~ratio_plot_data$year_ratio)
-abline(reg, col =  "blue")
- reg$coefficients[2]
- 
-abline(h = 1, col = "red") 
-
-#actual indian gender ratio
-
-
-abline (h = 0.9, col = "green")
-
-
-#ggplot
-
-library(ggplot2)
-ggplot(ratio_plot_data, aes(x=year_ratio, y= gen_ratios), color="steelblue") + 
+ggplot(gender_ratios_by_year, aes(x=year, y= ratios), color="steelblue") + 
   geom_point() + geom_smooth() +
-  labs(title="Election Data (1978 - 2015)", x="Year", y="Gender Ratio of Cnadidates (Females per Males)") + 
-  coord_cartesian(ylim=c(0, 1)) + 
-                    geom_hline(yintercept = 1, color = "red", size = 2 ) +
+  labs(title="Election Data (1977 - 2015)", x="Year", y="Gender Ratio of Cnadidates (Females per Males)") + 
+  geom_hline(yintercept = 1, color = "red", size = 2 ) +
   geom_hline(yintercept = 0.918, color = "green", size = 2 )
   
 
-
-
  
-#statistical siginificance
-simulation <- data.frame(ratio_plot_data)
-
-x <- 100000
+#statistical siginificance by stimulating and sampling
+simulation <- gender_ratios_by_year
+trials <- 100000
 counts <- numeric(100000)
 
-for ( i in 1:x) { 
+for ( i in 1:trials) { 
   
-  simulation$gen_ratios <- sample(simulation$gen_ratios)
+  simulation$ratios <- sample(simulation$ratios)
   
-  reg2 <- lm(simulation$gen_ratios~simulation$year_ratio)
+  reg_stat_significance <- lm(simulation$ratios~simulation$X.year.....year)
    
-  counts[i] <- reg2$coefficients[2]
+  counts[i] <- reg_stat_significance$coefficients[2]
   
 }
 
+hist(counts, xlim = c(-0.0019, 0.0019))
+#creating a linear regression model for actual data and displaying the slope of actual regression as a vertical red line.
+reg_gender_ratios_by_year <-  lm(gender_ratios_by_year$ratios~gender_ratios_by_year$X.year.....year)
+abline(v=reg_gender_ratios_by_year$coefficients[2], col = "red")
 
-hist(counts)
+#even with 1 lakh random trials it is near impossible to get the postive trend that we see. hence it is statistically sigificant.
+#it also has a very low p value.
 
 
-abline(v = (reg$coefficients[2]), col = "green")
 
-#seems statistically significant
+###############
+
+
 
 #percentage increase in gender ratio
 
@@ -208,16 +199,8 @@ for (i in 1:number_of_years(gujarat$year)) {
 } 
 
 gujarat_plot <- data.frame("year" = unique(gujarat$year), "g_ratio" = ratio_guj)
+
 ##
-
-
- number_of_years <- function(st_name){
-   years <- (sum(table(unique(st_name))))
-   return(years)
- }
-
- number_of_years(gujarat$year)   
-############ 
 
  himachal_pradesh <- subset(elections, st_name == "Himachal Pradesh" )
  
