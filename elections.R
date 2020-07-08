@@ -828,7 +828,12 @@ paty_data <- data.frame("gender_ratio" = party_ratio, "party" = party_name)
 
 plot(party_name~party_ratio)
 
+
+
 ######TRYING OUT ANIMATION
+
+gen_elec_years <- c(1977,1980,1989,1991,1996,2009,2014)
+
 
 calc_males <- function(year) {
   sum(elections$year== year & elections$cand_sex == "M")
@@ -839,19 +844,20 @@ calc_females <- function(year) {
 }
 
 male <- numeric()
-year_ani <- unique(elections$year)
+year_ani <- gen_elec_years
 
-for (i in 1:number_of_years(elections$year)) {
+for (i in 1:number_of_years(gen_elec_years)) {
   male[i] <- calc_males(year_ani[i])
 
 }
 
 female <- numeric()
 
-for (i in 1:number_of_years(elections$year)) {
+for (i in 1:number_of_years(gen_elec_years)) {
   female[i] <- calc_females(year_ani[i])
   
 }
+
 
 animations_data <- data.frame("year" = year_ani, "males" = male, "females" = female)
 
