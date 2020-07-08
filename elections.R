@@ -1,5 +1,11 @@
 library(haven)
 library(tidyverse)
+library(ggplot2)
+library(gganimate)
+library(gifski)
+library(av)
+library(png)
+library(reshape2)
 Bhavnani_India_State_Election_Dataset_v_3_0 <- read_dta("C:/Users/home/Desktop/dataverse_files (1)/Bhavnani India State Election Dataset v 3.0.dta")
 
 #Inspecting data
@@ -74,27 +80,38 @@ abline(v=reg_gender_ratios_by_year$coefficients[2], col = "red")
 
 
 
-###############
+#########looping state wise data
+
+states <- unique(elections$st_name)
+
+for (i in number_of_years(elections$st_name)) {
+
+  states[i] <- data.frame(subset(elections, st_name == states[i] ))
 
 
+  gender_ratio <- numeric()
+  year <- unique(elections$year)
+  
+  for (i in 1:number_of_years(elections$year)) {
+    gender_ratio[i] <- calc_gender_ratio_per_year(year[i])
+    
+  }
+  
+  #storing gender ratio values in a new dataset, gender_ratios_by_year and arranging them in chronological order.
+  gender_ratios_by_year <- data.frame("year" <- year, "ratios" = gender_ratio, 
+                                      stringsAsFactors = FALSE )
+  
+    }
 
-#percentage increase in gender ratio
 
-0.10891089 - 0.02888087
+#storing gender ratio values in a new dataset, gender_ratios_by_year and arranging them in chronological order.
+gender_ratios_by_year <- data.frame("year" <- year, "ratios" = gender_ratio, 
+                                    stringsAsFactors = FALSE )
 
-0.08003002/38
-
-0.002106053*100 # 0.2106053 % increase per year
-
-
-
-#trying subsetting
-
-kerala <- subset(elections, st_name == "Kerala" )
 
 #trying for loop
 
-ratio_k <- numeric(9)
+ratio_k <- numeric(number_of_years(elections$st_name == "kerala"))
 kkk <- unique(kerala$year)
 
 for (i in 1:9) {
@@ -106,28 +123,6 @@ for (i in 1:9) {
 
 kerala_plot <- data.frame("year" = unique(kerala$year), "g_ratio" = ratio_k)
 
-library(ggplot2)
-ggplot(kerala_plot, aes(x=year, y=g_ratio)) + geom_point() + geom_smooth() + coord_cartesian(ylim=c(0, 1))
-
-
-
-############
-plot(ratio_plot_data$gen_ratios~ratio_plot_data$year_ratio, ylim = c(0,0.5), xlab = " Election Year", ylab = "Gender Ratio (Females per Males" )
-reg <- lm(ratio_plot_data$gen_ratios~ratio_plot_data$year_ratio)
-abline(reg, col =  "blue")
-reg$coefficients[2]
-
-abline(h = 1, col = "red") 
-
-#actual indian gender ratio
-
-
-abline (h = 0.9, col = "green")
-
-points(kerala_plot$g_ratio~kerala_plot$year, col = "red")
- reg_kerala <- lm(kerala_plot$g_ratio~kerala_plot$year)
-abline(reg_kerala, col = "pink")
-########
 
 andhra_Pradesh <- subset(elections, st_name == "Andhra Pradesh" )
 
@@ -833,3 +828,46 @@ paty_data <- data.frame("gender_ratio" = party_ratio, "party" = party_name)
 
 plot(party_name~party_ratio)
 
+######TRYING OUT ANIMATION
+
+calc_males <- function(year) {
+  sum(elections$year== year & elections$cand_sex == "M")
+}
+
+calc_females <- function(year) {
+  sum(elections$year== year & elections$cand_sex == "F")
+}
+
+male <- numeric()
+year_ani <- unique(elections$year)
+
+for (i in 1:number_of_years(elections$year)) {
+  male[i] <- calc_males(year_ani[i])
+
+}
+
+female <- numeric()
+
+for (i in 1:number_of_years(elections$year)) {
+  female[i] <- calc_females(year_ani[i])
+  
+}
+
+animations_data <- data.frame("year" = year_ani, "males" = male, "females" = female)
+
+animations_data <- animations_data %>% arrange(year)
+
+
+
+
+test_data_long <- melt(animations_data, id="year")  # convert to long format
+
+p <- ggplot(data=test_data_long,
+       aes(x=year, y=value, colour=variable)) +
+  geom_line()
+
+p
+
+p + 
+  geom_point() +
+  transition_reveal(year)
