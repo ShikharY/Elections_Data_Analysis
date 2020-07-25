@@ -59,7 +59,7 @@ ggplot(gender_ratios_by_year, aes(x = year, y = ratios*100), color = "steelblue"
   geom_hline(yintercept = 91.8,
              color = "green",
              size = 2)
-ggsave("National Average Gender Ratio Trend.png")
+ggsave("National_Average_Gender_Ratio_Trend.png")
 
 
 #statistical significance by stimulating and sampling
