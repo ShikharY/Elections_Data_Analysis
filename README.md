@@ -1,5 +1,5 @@
-# Analysing Gender Composition of Candidates in Indian Elections
-[PROJECT IN PROGRESS]
+# Analysing Gender Composition of Candidates in Indian Elections [**IN PROGRESS**]
+
 
 This is a personal project where I am wworking with the Bhavnani Open source data on Indian elections since 1977 to 2015. The dataset can be found here: (https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/26526)
 
