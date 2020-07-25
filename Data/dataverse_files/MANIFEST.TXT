@@ -1,0 +1,3 @@
+Bhavnani India national and state election dataset v 2.0 doc.pdf (application/pdf) 73177 bytes.
+Bhavnani India national election dataset v 2.0.dta (application/x-stata-13) 16080570 bytes.
+Bhavnani India State Election Dataset v 3.0.dta (application/x-stata-13) 72662460 bytes.

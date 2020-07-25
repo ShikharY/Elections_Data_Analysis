@@ -5,13 +5,12 @@ library(gifski)
 library(png)
 library(reshape2)
 library(forecast)
-Bhavnani_India_State_Election_Dataset_v_3_0 <-
+
+elections <-
   read_dta(
-    "C:/Users/home/Desktop/dataverse_files (1)/Bhavnani India State Election Dataset v 3.0.dta"
+    "Data/dataverse_files/Bhavnani India State Election Dataset v 3.0.dta"
   )
 
-#Inspecting data
-elections <- Bhavnani_India_State_Election_Dataset_v_3_0
 barplot(table(elections$cand_sex))
 
 #Function to calculate gender ratio of a particular year
@@ -51,16 +50,16 @@ gender_ratios_by_year <-
 #Plotting the gender ratios vs year using ggplot2, adding a red line to visualize a g perfect gender ratio of 1 and
 #a green line to visualize India's gender ratio in 2015.
 
-ggplot(gender_ratios_by_year, aes(x = year, y = ratios), color = "steelblue") +
+ggplot(gender_ratios_by_year, aes(x = year, y = ratios*100), color = "steelblue") +
   geom_point() + geom_smooth() +
-  labs(title = "Election Data (1977 - 2015)", x = "Year", y = "Gender Ratio of Cnadidates (Females per Males)") +
-  geom_hline(yintercept = 1,
+  labs(title = "Election Data (1977 - 2015)", x = "Year", y = "Gender Ratio of Cnadidates (Females per 100 Males)") +
+  geom_hline(yintercept = 100,
              color = "red",
              size = 2) +
-  geom_hline(yintercept = 0.918,
+  geom_hline(yintercept = 91.8,
              color = "green",
              size = 2)
-
+ggsave("National Average Gender Ratio Trend.png")
 
 
 #statistical significance by stimulating and sampling
@@ -129,17 +128,30 @@ for (s in names(states_data_list)) {
     
   }
   states_gen_ratio_list[[s]] <- data.frame(year = state_years,
-                                           gen_ratio = dat_ratio)
+                                           gen_ratio = dat_ratio,
+                                           st_name = unique(states_data_list[[s]]$st_name))
 }
 
 
 
+states_gen_ratio_data <- do.call(rbind, states_gen_ratio_list)
+
+by_state <- states_gen_ratio_data %>% group_by(st_name)
+
+ggplot(data=by_state, aes(x = year, y = gen_ratio, group = st_name)) + 
+  coord_cartesian(ylim = c(0, 1)) + geom_point(aes(color = st_name)) + 
+  geom_line(aes(color = st_name))
 
 
 
 
-ggplot(ratio_plot_data, aes(x = year_ratio, y = gen_ratios)) +
-  geom_point(aes(color = "National"))  + geom_abline(
+
+
+
+
+
+ggplot(states_gen_ratio_data, aes(x = year, y = gen_ratios)) +
+  geom_point(aes(color = st_name))  + geom_abline(
     slope = reg$coefficients[2],
     intercept = reg$coefficients[1],
     col = "blue",
