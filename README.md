@@ -6,4 +6,4 @@ This is a personal project where I am wworking with the Bhavnani Open source dat
 Right now, I have looked at the average growth (or rather lack of it) in gender ratio of candidates standing up for elections across India. 
 
 
-![Gender Ratio since 1977 to 2015 for state and general elections. (Data for 2010 not available)](https://github.com/ShikharY/Elections_Data_Analysis.git/blob/Plots/National Average Gender Ratio Trend.png)
+![Gender Ratio since 1977 to 2015 for state and general elections. (Data for 2010 not available)](https://github.com/ShikharY/Elections_Data_Analysis/blob/Plots/National Average Gender Ratio Trend.png)
