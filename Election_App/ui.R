@@ -1,6 +1,8 @@
 fluidPage(
   titlePanel("Gender Ratio in Indian Elections"),
-  selectInput(
+ sidebarLayout(
+   sidebarPanel(
+   selectInput(
     "state",
     "State",
     choices = c(
@@ -34,11 +36,15 @@ fluidPage(
       "Uttar Pradesh",
       "Uttarakhand",
       "West Bengal"),
-    multiple = FALSE,
+    multiple = TRUE,
+    selected = c("West Bengal", "Kerala")
   ),
   sliderInput("y_axis", "Set Y axis", min = 1, max = 100, value = 100 ),
   sliderInput("year", "Year", min = 1978, max = 2015, value = 2015, step = 1, sep = "" ),
+   ), 
+  mainPanel(
   plotOutput("plot")
   
-  
+  )
+)
 )
