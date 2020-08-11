@@ -65,7 +65,7 @@ states_gen_ratio_data <- do.call(rbind, states_gen_ratio_list)
   output$plot <- renderPlot({
     states_gen_ratio_data %>% filter(st_name %in% input$state) %>%
       ggplot() + 
-      coord_cartesian(ylim = c(0, input$y_axis), xlim = c(1977, input$year)) + 
+      coord_cartesian(ylim = c(0, input$y_axis), xlim = c(input$year)) + 
       geom_point(aes(size = gen_ratio, col = st_name, group = st_name, x = year, y = gen_ratio)) + 
       geom_smooth(aes(col = st_name, x = year, y= gen_ratio),se = FALSE, method = "lm") + 
       labs( x = "Year", y = "Gender Ratio (Female Candidates per (0-100) Male Candidates)") +
